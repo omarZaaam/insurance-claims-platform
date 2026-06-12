@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#080c14; font-family:'Segoe UI',system-ui,sans-serif; color:#e2e8f0; min-height:100vh; }
+
+.topbar { background:#0d1421; border-bottom:1px solid #1e2d45; padding:14px 28px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.topbar-title { font-size:15px; font-weight:700; color:#60a5fa; }
+.topbar-sub { font-size:11px; color:#4a6080; margin-top:2px; }
+.legend { display:flex; gap:16px; flex-wrap:wrap; }
+.legend-item { display:flex; align-items:center; gap:5px; font-size:10px; color:#64748b; }
+.legend-dot { width:9px; height:9px; border-radius:50%; }
+
+.canvas { padding:24px 28px 12px; }
+.tier-row { display:flex; align-items:center; gap:14px; min-height:108px; }
+.tier-label { width:86px; flex-shrink:0; text-align:right; padding-right:12px; border-right:2px solid #1e2d45; }
+.tier-label .tl-name { font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; }
+.tier-label .tl-sub { font-size:9px; color:#334155; margin-top:3px; }
+.tier-nodes { display:flex; gap:12px; flex:1; flex-wrap:wrap; }
+
+.node { background:#0d1421; border:1.5px solid #1e3a5f; border-radius:10px; padding:12px 14px; min-width:134px; cursor:pointer; transition:all .2s; position:relative; user-select:none; }
+.node:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.5); }
+.node.active { border-color:var(--ac); box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 20%,transparent); }
+.node.pulse { animation:pb 1.3s ease infinite; }
+@keyframes pb { 0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ac) 35%,transparent)} 50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--ac) 8%,transparent)} }
+.node-badge { position:absolute; top:7px; right:7px; background:color-mix(in srgb,var(--ac) 18%,transparent); color:var(--ac); font-size:9px; font-weight:700; padding:2px 5px; border-radius:20px; border:1px solid color-mix(in srgb,var(--ac) 35%,transparent); }
+.node-icon { font-size:18px; margin-bottom:5px; }
+.node-name { font-size:11px; font-weight:700; color:var(--ac,#60a5fa); }
+.node-tech { font-size:9.5px; color:#4a6080; margin-top:2px; }
+
+.arrow-zone { display:flex; align-items:flex-end; gap:12px; min-height:52px; padding:0 0 0 100px; }
+.acol { display:flex; flex-direction:column; align-items:center; min-width:134px; font-size:9px; gap:3px; }
+.alabel { background:#0d1421; border:1px solid #1e2d45; border-radius:4px; padding:2px 8px; white-space:nowrap; max-width:190px; overflow:hidden; text-overflow:ellipsis; }
+.alabel.req { color:#93c5fd; border-color:#1e3a5f; }
+.alabel.res { color:#34d399; border-color:#134e38; }
+.alabel.kaf { color:#c084fc; border-color:#4c1d95; }
+.shaft-d { width:1.5px; height:16px; background:linear-gradient(#3b82f6,#1d4ed8); }
+.shaft-u { width:1.5px; height:16px; background:linear-gradient(#34d399,#059669); }
+.shaft-k { width:1.5px; height:16px; background:linear-gradient(#a855f7,#4c1d95); }
+.ah-d::after { content:"▼"; font-size:8px; color:#3b82f6; }
+.ah-u::before { content:"▲"; font-size:8px; color:#34d399; }
+.ah-k::after  { content:"▼"; font-size:8px; color:#a855f7; }
+
+.detail { background:#0d1421; border:1px solid #1e3a5f; border-radius:12px; padding:18px 20px; margin:14px 28px; }
+.dh { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.dh-icon { font-size:22px; }
+.dh-title { font-size:14px; font-weight:700; }
+.dh-sub { font-size:10.5px; color:#4a6080; }
+.dbody { font-size:11px; color:#94a3b8; line-height:1.75; }
+.dtags { display:flex; gap:7px; flex-wrap:wrap; margin-top:10px; }
+.dtag { background:#111c2d; border:1px solid #1e3a5f; border-radius:5px; padding:3px 9px; font-size:9.5px; color:#60a5fa; font-family:monospace; }
+.dflow { display:flex; gap:7px; align-items:center; flex-wrap:wrap; margin-top:11px; }
+.dstep { background:#111c2d; border-radius:5px; padding:3px 10px; font-size:9.5px; color:#94a3b8; border-left:3px solid var(--ac,#3b82f6); }
+.darr { color:#334155; font-size:11px; }
+
+.bottom { padding:0 28px 12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.btn { border:none; border-radius:8px; padding:10px 20px; font-size:12px; font-weight:700; cursor:pointer; color:#fff; letter-spacing:.5px; transition:opacity .2s; }
+.btn:hover { opacity:.82; }
+.btn:disabled { opacity:.35; cursor:not-allowed; }
+.btn-run { background:linear-gradient(135deg,#1d4ed8,#7c3aed); }
+.btn-clr { background:linear-gradient(135deg,#134e38,#064e3b); }
+.hint { font-size:10px; color:#2d3f55; margin-left:auto; }
+
+.log-wrap { padding:0 28px 24px; }
+.log { background:#060a10; border:1px solid #1e2d45; border-radius:8px; padding:14px; font-family:'Courier New',monospace; font-size:10.5px; min-height:80px; max-height:140px; overflow-y:auto; }
+.ll { padding:1.5px 0; }
+.ll.info  { color:#60a5fa; }
+.ll.ok    { color:#34d399; }
+.ll.db    { color:#fb923c; }
+.ll.kaf   { color:#c084fc; }
+.ll.dim   { color:#374151; }
+
+hr.sep { border:none; border-top:1px solid #111c2d; margin:4px 28px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-title">🛡️ InsureCo — Claim Submission Platform</div>
+    <div class="topbar-sub">Architecture Diagram · Click any component to explore · Simulate the end-to-end flow</div>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Presentation</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>API / Services</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Data</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ec4899"></div>Kafka</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>Processing</div>
+  </div>
+</div>
+
+<div class="canvas">
+
+  <!-- TIER 1 -->
+  <div class="tier-row">
+    <div class="tier-label"><div class="tl-name" style="color:#3b82f6">Presentation</div><div class="tl-sub">Browser</div></div>
+    <div class="tier-nodes">
+      <div class="node" style="--ac:#3b82f6" id="n-portal" onclick="sel('portal')">
+        <div class="node-badge">SPA</div><div class="node-icon">🌐</div>
+        <div class="node-name">Claims Portal</div><div class="node-tech">React + TypeScript</div>
+      </div>
+      <div class="node" style="--ac:#3b82f6" id="n-cdn" onclick="sel('cdn')">
+        <div class="node-badge">CDN</div><div class="node-icon">⚡</div>
+        <div class="node-name">Static Assets</div><div class="node-tech">CloudFront / S3</div>
+      </div>
+      <div class="node" style="--ac:#3b82f6" id="n-auth" onclick="sel('auth')">
+        <div class="node-badge">OAuth2</div><div class="node-icon">🔐</div>
+        <div class="node-name">Auth Service</div><div class="node-tech">AWS Cognito / Auth0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARROWS 1→2 -->
+  <div class="arrow-zone">
+    <div class="acol">
+      <div class="alabel req">POST /api/claims  JWT Bearer</div>
+      <div class="shaft-d"></div><div class="ah-d"></div>
+      <div class="ah-u"></div><div class="shaft-u"></div>
+      <div class="alabel res">201 { claimId, status }</div>
+    </div>
+    <div class="acol" style="min-width:134px"></div>
+    <div class="acol">
+      <div class="alabel req">JWKS token validate</div>
+      <div class="shaft-d"></div><div class="ah-d"></div>
+      <div class="ah-u"></div><div class="shaft-u"></div>
+      <div class="alabel res">{ sub, roles }</div>
+    </div>
+  </div>
+
+  <!-- TIER 2 -->
+  <div class="tier-row">
+    <div class="tier-label" style="border-color:#2e1065"><div class="tl-name" style="color:#8b5cf6">Services</div><div class="tl-sub">Backend</div></div>
+    <div class="tier-nodes">
+      <div class="node" style="--ac:#8b5cf6" id="n-gw" onclick="sel('gw')">
+        <div class="node-badge">TLS</div><div class="node-icon">🔀</div>
+        <div class="node-name">API Gateway</div><div class="node-tech">Kong / AWS API GW</div>
+      </div>
+      <div class="node" style="--ac:#8b5cf6" id="n-claimssvc" onclick="sel('claimssvc')">
+        <div class="node-badge">REST</div><div class="node-icon">📋</div>
+        <div class="node-name">Claims Service</div><div class="node-tech">Node.js / NestJS</div>
+      </div>
+      <div class="node" style="--ac:#8b5cf6" id="n-docsvc" onclick="sel('docsvc')">
+        <div class="node-badge">S3</div><div class="node-icon">📎</div>
+        <div class="node-name">Document Service</div><div class="node-tech">Python / FastAPI</div>
+      </div>
+      <div class="node" style="--ac:#8b5cf6" id="n-notif" onclick="sel('notif')">
+        <div class="node-badge">SES</div><div class="node-icon">📧</div>
+        <div class="node-name">Notification Svc</div><div class="node-tech">Go · SES + Twilio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARROWS 2→3 -->
+  <div class="arrow-zone">
+    <div class="acol" style="min-width:134px"></div>
+    <div class="acol">
+      <div class="alabel req">INSERT claims + documents</div>
+      <div class="shaft-d"></div><div class="ah-d"></div>
+      <div class="ah-u"></div><div class="shaft-u"></div>
+      <div class="alabel res">claimId (UUID)</div>
+    </div>
+    <div class="acol">
+      <div class="alabel kaf">produce → claims.submitted</div>
+      <div class="shaft-k"></div><div class="ah-k"></div>
+    </div>
+    <div class="acol">
+      <div class="ah-u" style=""></div><div class="shaft-u"></div>
+      <div class="alabel res">trigger email / SMS</div>
+    </div>
+  </div>
+
+  <!-- TIER 3 -->
+  <div class="tier-row">
+    <div class="tier-label" style="border-color:#451a03"><div class="tl-name" style="color:#f59e0b">Data</div><div class="tl-sub">Persistence</div></div>
+    <div class="tier-nodes">
+      <div class="node" style="--ac:#f59e0b" id="n-pg" onclick="sel('pg')">
+        <div class="node-badge">Primary</div><div class="node-icon">🐘</div>
+        <div class="node-name">PostgreSQL</div><div class="node-tech">RDS Multi-AZ</div>
+      </div>
+      <div class="node" style="--ac:#f59e0b" id="n-s3" onclick="sel('s3')">
+        <div class="node-badge">Objects</div><div class="node-icon">🗄️</div>
+        <div class="node-name">S3 Bucket</div><div class="node-tech">Docs, PDFs, Photos</div>
+      </div>
+      <div class="node pulse" style="--ac:#ec4899" id="n-kafka" onclick="sel('kafka')">
+        <div class="node-badge">Broker</div><div class="node-icon">⚡</div>
+        <div class="node-name">Kafka (MSK)</div><div class="node-tech">claims.submitted</div>
+      </div>
+      <div class="node" style="--ac:#10b981" id="n-consumer" onclick="sel('consumer')">
+        <div class="node-badge">Consumer</div><div class="node-icon">⚙️</div>
+        <div class="node-name">Claims Processor</div><div class="node-tech">Java / Spring Kafka</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="detail" id="detail">
+  <div class="dh">
+    <div class="dh-icon">🛡️</div>
+    <div>
+      <div class="dh-title" style="color:#60a5fa">InsureCo Claim Submission Platform</div>
+      <div class="dh-sub">Click any component above to inspect it, or run the end-to-end flow simulation below.</div>
+    </div>
+  </div>
+  <div class="dbody">
+    A policyholder files a claim through the React portal. The API Gateway authenticates the JWT, routes to the Claims Service which <strong>persists the claim and documents to PostgreSQL</strong>, then <strong>produces a <code>claim.submitted</code> event to Kafka</strong>. Downstream consumers handle adjudication, notifications, and fraud detection asynchronously.
+  </div>
+</div>
+
+<hr class="sep">
+
+<div class="bottom">
+  <button class="btn btn-run" id="run-btn" onclick="runFlow()">▶ Simulate Claim Submission</button>
+  <button class="btn btn-clr" onclick="clearLog()">✕ Clear Log</button>
+  <div class="hint">click components to inspect · run simulation to trace the full flow</div>
+</div>
+<div class="log-wrap">
+  <div class="log" id="log">
+    <div class="ll dim">// Execution log — press ▶ Simulate Claim Submission to start</div>
+  </div>
+</div>
+
+<script>
+const NODES = {
+  portal:{ icon:'🌐', name:'Claims Portal', ac:'#3b82f6', sub:'React + TypeScript · SPA',
+    body:'Multi-step form: policy lookup → incident details → damage description → document upload. Client-side Zod validation before submission. React Query manages async state and retry logic.',
+    tags:['React 18','TypeScript','React Query','Zod validation','JWT Bearer'],
+    flow:['Policyholder fills form','Zod validates fields','POST /api/claims + Bearer token','Display claimId & status to user']},
+  cdn:{ icon:'⚡', name:'Static Assets / CDN', ac:'#3b82f6', sub:'CloudFront + S3 origin',
+    body:'React build artefacts (JS bundles, CSS, fonts) deployed to S3 and served via CloudFront edge nodes. Immutable Cache-Control headers for hashed assets ensure zero stale-asset risk on deploy.',
+    tags:['CloudFront','S3 origin','Cache-Control: immutable','gzip + brotli','Edge TTL: 1yr'],
+    flow:['CI build → s3 sync','CloudFront invalidation','Edge serves ~10ms TTFB']},
+  auth:{ icon:'🔐', name:'Auth Service', ac:'#3b82f6', sub:'OAuth 2.0 / OIDC · Cognito or Auth0',
+    body:'Issues RS256 JWT access tokens. The Claims Service verifies tokens via the JWKS endpoint without calling Auth on every request (cached public keys). Roles: policyholder, adjuster, admin.',
+    tags:['JWT RS256','JWKS endpoint','OAuth2 PKCE','MFA enforced','Roles: policyholder / adjuster'],
+    flow:['Login → PKCE flow','Access token issued (15min)','Refresh token stored securely','Bearer attached to all API calls']},
+  gw:{ icon:'🔀', name:'API Gateway', ac:'#8b5cf6', sub:'Kong / AWS API Gateway · Single ingress',
+    body:'Handles TLS termination, rate limiting (100 req/min per client IP), JWT signature verification via JWKS, and upstream routing to internal microservices. Aggregates structured logs to CloudWatch.',
+    tags:['TLS 1.3 termination','Rate limit: 100/min','JWT verify middleware','Request tracing (X-Ray)','Route: POST /api/claims'],
+    flow:['Receive POST /api/claims','Verify JWT signature','Rate-limit check','Route → Claims Service']},
+  claimssvc:{ icon:'📋', name:'Claims Service', ac:'#8b5cf6', sub:'Node.js / NestJS · Core orchestrator',
+    body:'Validates the payload, runs business rules (policy coverage check, duplicate detection via idempotency key), writes the claim record to PostgreSQL in a transaction, then produces a Kafka event. Returns 201 with claimId synchronously.',
+    tags:['NestJS','TypeORM transactions','Idempotency key','Coverage rules engine','Kafka producer (kafkajs)'],
+    flow:['Validate payload (Zod)','Coverage check → PASS','BEGIN TRANSACTION','INSERT claims + docs','COMMIT → produce Kafka event','Return 201 + claimId']},
+  docsvc:{ icon:'📎', name:'Document Service', ac:'#8b5cf6', sub:'Python / FastAPI · File handling',
+    body:'Accepts multipart uploads (photos, PDFs, police reports). Streams files through ClamAV virus scan, uploads to S3 under claims/{claimId}/, stores metadata (filename, S3 key, MIME, SHA-256) in PostgreSQL linked to the claim.',
+    tags:['FastAPI','Boto3','Presigned S3 URLs','ClamAV virus scan','SHA-256 checksum'],
+    flow:['Receive multipart upload','Virus scan (ClamAV)','Stream → S3 claims/{id}/','Store metadata in PostgreSQL','Link document to claimId']},
+  notif:{ icon:'📧', name:'Notification Service', ac:'#8b5cf6', sub:'Go · Email + SMS dispatch',
+    body:'Subscribes to Kafka topic for claim status changes. Sends transactional emails via AWS SES and SMS via Twilio. Templates stored in DynamoDB. Implements exponential-backoff retry on delivery failure.',
+    tags:['Go','Kafka consumer group','AWS SES (email)','Twilio (SMS)','Exponential backoff retry'],
+    flow:['Consume claim.submitted','Render template from DynamoDB','Send email via SES','Send SMS via Twilio','Mark notification delivered']},
+  pg:{ icon:'🐘', name:'PostgreSQL (RDS)', ac:'#f59e0b', sub:'RDS Multi-AZ · Primary data store',
+    body:'Stores claims, document metadata, policy references, and audit logs. UUIDs as primary keys, row-level security restricts adjusters to their assigned claims. Partial index on (status) for fast queue queries.',
+    tags:['RDS Multi-AZ','UUID PKs','Row-level security','claims table','documents table','audit_log table'],
+    flow:['claims(id, policy_id, status, amount, ...)','documents(id, claim_id, s3_key, mime, ...)','audit_log(claim_id, actor, action, ts)']},
+  s3:{ icon:'🗄️', name:'S3 Document Bucket', ac:'#f59e0b', sub:'Object storage · Claim files and policy docs',
+    body:'Stores raw uploaded files namespaced by claimId. SSE-S3 encryption at rest. Lifecycle rules archive to Glacier after 180 days. Access exclusively via presigned URLs — no public ACLs.',
+    tags:['SSE-S3 encryption','Presigned URLs only','Glacier lifecycle (180d)','Versioning enabled','Path: claims/{claimId}/'],
+    flow:['Document Service uploads via SDK','Key: claims/{claimId}/{filename}','Presigned URL served to clients','Lifecycle → Glacier after 180 days']},
+  kafka:{ icon:'⚡', name:'Apache Kafka (MSK)', ac:'#ec4899', sub:'Amazon MSK · Event streaming backbone',
+    body:'Central event bus. Claims Service produces to claims.submitted (3 partitions, RF=3). Partitioned by policyId to guarantee ordering per policyholder. Consumers: Claims Processor, Notification Service, Fraud Detection ML pipeline.',
+    tags:['Topic: claims.submitted','3 partitions','Replication factor: 3','Partition key: policyId','Retention: 7 days'],
+    flow:['Producer: Claims Service','Topic: claims.submitted','Consumer grp: processor','Consumer grp: notifications','Consumer grp: fraud-ml']},
+  consumer:{ icon:'⚙️', name:'Claims Processor', ac:'#10b981', sub:'Java / Spring Kafka · Async adjudication worker',
+    body:'Long-running consumer. Polls claims.submitted, runs automated triage (amount thresholds, coverage verification), assigns adjuster from the work queue, updates status to UNDER_REVIEW or AUTO_APPROVED, then emits claim.status_updated downstream.',
+    tags:['Spring Boot','Kafka Consumer API','Auto-triage rules','Adjuster assignment queue','Produces: claim.status_updated'],
+    flow:['Poll claims.submitted','Run triage rules','Assign adjuster (or auto-approve)','UPDATE status in PostgreSQL','Produce claim.status_updated']}
+};
+
+let cur = null;
+const NID = {portal:'n-portal',cdn:'n-cdn',auth:'n-auth',gw:'n-gw',claimssvc:'n-claimssvc',docsvc:'n-docsvc',notif:'n-notif',pg:'n-pg',s3:'n-s3',kafka:'n-kafka',consumer:'n-consumer'};
+
+function sel(id) {
+  if (cur && NID[cur]) document.getElementById(NID[cur]).classList.remove('active');
+  cur = id;
+  document.getElementById(NID[id]).classList.add('active');
+  const d = NODES[id];
+  document.getElementById('detail').innerHTML = `
+    <div class="dh">
+      <div class="dh-icon">${d.icon}</div>
+      <div>
+        <div class="dh-title" style="color:${d.ac}">${d.name}</div>
+        <div class="dh-sub">${d.sub}</div>
+      </div>
+    </div>
+    <div class="dbody">${d.body}</div>
+    <div class="dtags">${d.tags.map(t=>`<span class="dtag">${t}</span>`).join('')}</div>
+    <div class="dflow">${d.flow.map((s,i)=>`<span class="dstep" style="--ac:${d.ac}">${s}</span>${i<d.flow.length-1?'<span class="darr">→</span>':''}`).join('')}</div>
+  `;
+}
+
+const STEPS = [
+  {c:'info', m:'[Portal]         POST /api/claims  { policyId:"POL-8821", type:"AUTO_COLLISION", amount:4200.00, incidentDate:"2026-06-10" }'},
+  {c:'info', m:'[API Gateway]    TLS 1.3 · JWT signature verified — sub: user-441, role: policyholder'},
+  {c:'info', m:'[API Gateway]    Rate-limit OK (12/100) — routing → Claims Service'},
+  {c:'info', m:'[Claims Svc]     Payload validated (Zod schema). Policy POL-8821 → coverage ACTIVE'},
+  {c:'info', m:'[Claims Svc]     Duplicate check — no existing open claim for this incident ✓'},
+  {c:'db',   m:'[PostgreSQL]     BEGIN TRANSACTION'},
+  {c:'db',   m:'[PostgreSQL]     INSERT INTO claims (id, policy_id, status, amount) VALUES (\'CLM-9934-X\', \'POL-8821\', \'SUBMITTED\', 4200.00)'},
+  {c:'db',   m:'[Doc Service]    Virus scan PASS · uploading 2 files → S3: claims/CLM-9934-X/'},
+  {c:'db',   m:'[PostgreSQL]     INSERT INTO documents (claim_id, s3_key, mime) — 2 rows linked to CLM-9934-X'},
+  {c:'db',   m:'[PostgreSQL]     COMMIT — claim persisted ✓'},
+  {c:'kaf',  m:'[Kafka]          produce → topic: claims.submitted  key: POL-8821  partition: 1  offset: 10042'},
+  {c:'kaf',  m:'[Kafka]          Ack received from broker — ISR replicas: 3/3 ✓'},
+  {c:'ok',   m:'[Claims Svc]     ← 201 Created  { claimId: "CLM-9934-X", status: "SUBMITTED", ref: "INS-2026-44210" }'},
+  {c:'ok',   m:'[Portal]         Claim reference INS-2026-44210 displayed to policyholder ✓'},
+  {c:'dim',  m:'── async downstream processing ────────────────────────────────────────────'},
+  {c:'kaf',  m:'[Processor]      poll() → claims.submitted  offset: 10042  partition: 1'},
+  {c:'info', m:'[Processor]      Triage: amount $4,200 < AUTO_APPROVE_THRESHOLD $5,000 → AUTO_APPROVE'},
+  {c:'db',   m:'[PostgreSQL]     UPDATE claims SET status=\'AUTO_APPROVED\', adjuster_id=\'SYS\', resolved_at=NOW() WHERE id=\'CLM-9934-X\''},
+  {c:'kaf',  m:'[Processor]      produce → topic: claim.status_updated  { claimId:"CLM-9934-X", status:"AUTO_APPROVED" }'},
+  {c:'ok',   m:'[Notif Svc]      consume claim.status_updated → render template "auto_approved_en"'},
+  {c:'ok',   m:'[Notif Svc]      Email dispatched via SES → policyholder@example.com ✉️'},
+  {c:'ok',   m:'[Notif Svc]      SMS dispatched via Twilio → +1-555-****-8821 📱'},
+  {c:'ok',   m:'✅  End-to-end complete. Claim CLM-9934-X AUTO_APPROVED in ~310ms (sync) + ~1.2s (async).'},
+];
+
+let running = false;
+async function runFlow() {
+  if (running) return;
+  running = true;
+  document.getElementById('run-btn').disabled = true;
+  const log = document.getElementById('log');
+  log.innerHTML = '';
+  for (const s of STEPS) {
+    await new Promise(r => setTimeout(r, 290));
+    const ts = new Date().toISOString().slice(11,23);
+    const d = document.createElement('div');
+    d.className = 'll ' + s.c;
+    d.textContent = ts + '  ' + s.m;
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+  }
+  document.getElementById('run-btn').disabled = false;
+  running = false;
+}
+
+function clearLog() {
+  document.getElementById('log').innerHTML = '<div class="ll dim">// Log cleared — press ▶ to simulate again</div>';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureCo Claims Platform - Executive Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+
+        .presentation {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide h1 {
+            color: #667eea;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .slide h2 {
+            color: #764ba2;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            color: #667eea;
+            font-size: 1.6rem;
+            margin: 30px 0 15px 0;
+        }
+
+        .slide p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .slide ul, .slide ol {
+            margin-left: 40px;
+            margin-bottom: 20px;
+        }
+
+        .slide li {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            color: #555;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .architecture-diagram {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .layer {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .layer h4 {
+            color: #667eea;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .layer p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .components {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .component {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .component:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .component-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .component h4 {
+            color: #667eea;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .component p {
+            font-size: 0.95rem;
+            color: #666;
+            margin: 0;
+        }
+
+        .benefits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .benefit {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .benefit h4 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .benefit p {
+            color: white;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .tech-badge {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .flow-diagram {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .flow-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .flow-content h5 {
+            color: #667eea;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .flow-content p {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .metric {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            font-size: 1.1rem;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .slide {
+                page-break-after: always;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide">
+            <h1>🛡️ InsureCo</h1>
+            <h1>Claims Submission Platform</h1>
+            <p style="text-align: center; font-size: 1.5rem; margin-top: 40px; color: #764ba2;">
+                Modern Microservices Architecture
+            </p>
+            <p style="text-align: center; font-size: 1.2rem; margin-top: 20px; color: #999;">
+                Executive Presentation | 2026
+            </p>
+        </div>
+
+        <!-- Slide 2: Executive Summary -->
+        <div class="slide">
+            <h2>Executive Summary</h2>
+            <p>
+                The InsureCo Claims Submission Platform is a <span class="highlight">modern, cloud-native solution</span> 
+                designed to streamline the insurance claim submission and processing workflow.
+            </p>
+            <h3>Key Highlights</h3>
+            <ul>
+                <li><strong>Microservices Architecture:</strong> Scalable, maintainable, and resilient</li>
+                <li><strong>Event-Driven Processing:</strong> Asynchronous claim adjudication with Kafka</li>
+                <li><strong>Multi-Language Stack:</strong> Best tool for each job (Node.js, Python, Go, Java)</li>
+                <li><strong>Cloud-Ready:</strong> Containerized with Docker, deployable to any cloud platform</li>
+                <li><strong>Security First:</strong> OAuth2/JWT authentication, TLS encryption, rate limiting</li>
+            </ul>
+        </div>
+
+        <!-- Slide 3: Architecture Overview -->
+        <div class="slide">
+            <h2>Architecture Overview</h2>
+            <div class="architecture-diagram">
+                <div class="layer">
+                    <h4>🌐 Presentation Layer</h4>
+                    <p><strong>Claims Portal:</strong> React 18 + TypeScript SPA with multi-step form validation</p>
+                    <p><strong>CDN:</strong> CloudFront/S3 for static asset delivery with edge caching</p>
+                    <p><strong>Auth Service:</strong> AWS Cognito/Auth0 for OAuth2 authentication</p>
+                </div>
+                
+                <div class="layer">
+                    <h4>🔀 API Gateway Layer</h4>
+                    <p><strong>Kong/AWS API Gateway:</strong> TLS termination, JWT validation, rate limiting (100 req/min)</p>
+                    <p>Single ingress point for all backend services with request tracing</p>
+                </div>
+                
+                <div class="layer">
+                    <h4>⚙️ Microservices Layer</h4>
+                    <p><strong>Claims Service (NestJS):</strong> Core orchestrator for claim submission</p>
+                    <p><strong>Document Service (FastAPI):</strong> File handling with virus scanning</p>
+                    <p><strong>Notification Service (Go):</strong> Email/SMS dispatch via SES/Twilio</p>
+                </div>
+                
+                <div class="layer">
+                    <h4>💾 Data & Messaging Layer</h4>
+                    <p><strong>PostgreSQL (RDS Multi-AZ):</strong> Primary data store with row-level security</p>
+                    <p><strong>S3:</strong> Document storage with lifecycle policies</p>
+                    <p><strong>Kafka (MSK):</strong> Event streaming backbone (3 partitions, RF=3)</p>
+                </div>
+                
+                <div class="layer">
+                    <h4>🔄 Processing Layer</h4>
+                    <p><strong>Claims Processor (Java/Spring):</strong> Async adjudication worker with auto-triage</p>
+                    <p>Consumes events, applies business rules, assigns adjusters</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Components -->
+        <div class="slide">
+            <h2>Core Components</h2>
+            <div class="components">
+                <div class="component">
+                    <div class="component-icon">🌐</div>
+                    <h4>Claims Portal</h4>
+                    <p>React + TypeScript SPA with Zod validation and React Query</p>
+                </div>
+                <div class="component">
+                    <div class="component-icon">🔀</div>
+                    <h4>API Gateway</h4>
+                    <p>Kong with JWT verification and rate limiting</p>
+                </div>
+                <div class="component">
+                    <div class="component-icon">📋</div>
+                    <h4>Claims Service</h4>
+                    <p>NestJS orchestrator with TypeORM transactions</p>
+                </div>
+                <div class="component">
+                    <div class="component-icon">📎</div>
+                    <h4>Document Service</h4>
+                    <p>FastAPI with ClamAV virus scanning</p>
+                </div>
+                <div class="component">
+                    <div class="component-icon">📧</div>
+                    <h4>Notification Service</h4>
+                    <p>Go service with SES and Twilio integration</p>
+                </div>
+                <div class="component">
+                    <div class="component-icon">⚙️</div>
+                    <h4>Claims Processor</h4>
+                    <p>Java/Spring Kafka consumer with auto-triage</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: End-to-End Flow -->
+        <div class="slide">
+            <h2>End-to-End Claim Submission Flow</h2>
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div class="flow-content">
+                        <h5>Policyholder Submits Claim</h5>
+                        <p>Multi-step form with client-side validation → POST /api/claims with JWT Bearer token</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div class="flow-content">
+                        <h5>API Gateway Validates</h5>
+                        <p>TLS 1.3 termination → JWT signature verification → Rate limit check → Route to Claims Service</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div class="flow-content">
+                        <h5>Claims Service Processes</h5>
+                        <p>Validate payload → Coverage check → Duplicate detection → BEGIN TRANSACTION → INSERT claim + documents</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div class="flow-content">
+                        <h5>Kafka Event Published</h5>
+                        <p>COMMIT transaction → Produce to claims.submitted topic → Return 201 with claimId (~310ms)</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">5</div>
+                    <div class="flow-content">
+                        <h5>Async Processing</h5>
+                        <p>Claims Processor consumes event → Auto-triage (< $5K = auto-approve) → Update status → Assign adjuster</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">6</div>
+                    <div class="flow-content">
+                        <h5>Notifications Sent</h5>
+                        <p>Notification Service consumes status update → Send email via SES → Send SMS via Twilio (~1.2s total async)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Technology Stack -->
+        <div class="slide">
+            <h2>Technology Stack</h2>
+            <h3>Frontend</h3>
+            <div class="tech-stack">
+                <span class="tech-badge">React 18</span>
+                <span class="tech-badge">TypeScript</span>
+                <span class="tech-badge">Zod Validation</span>
+                <span class="tech-badge">Axios</span>
+                <span class="tech-badge">React Query</span>
+            </div>
+            
+            <h3>Backend Services</h3>
+            <div class="tech-stack">
+                <span class="tech-badge">Node.js / NestJS</span>
+                <span class="tech-badge">Python / FastAPI</span>
+                <span class="tech-badge">Go</span>
+                <span class="tech-badge">Java / Spring Boot</span>
+                <span class="tech-badge">Express.js</span>
+            </div>
+            
+            <h3>Data & Infrastructure</h3>
+            <div class="tech-stack">
+                <span class="tech-badge">PostgreSQL 15</span>
+                <span class="tech-badge">Apache Kafka (MSK)</span>
+                <span class="tech-badge">Redis</span>
+                <span class="tech-badge">AWS S3</span>
+                <span class="tech-badge">Docker</span>
+                <span class="tech-badge">Kubernetes-Ready</span>
+            </div>
+            
+            <h3>Security & Monitoring</h3>
+            <div class="tech-stack">
+                <span class="tech-badge">OAuth2 / JWT</span>
+                <span class="tech-badge">AWS Cognito</span>
+                <span class="tech-badge">Kong API Gateway</span>
+                <span class="tech-badge">TLS 1.3</span>
+                <span class="tech-badge">ClamAV</span>
+            </div>
+        </div>
+
+        <!-- Slide 7: Key Benefits -->
+        <div class="slide">
+            <h2>Key Benefits</h2>
+            <div class="benefits">
+                <div class="benefit">
+                    <h4>📈 Scalability</h4>
+                    <p>Each microservice scales independently based on load. Horizontal scaling with Kubernetes ensures high availability.</p>
+                </div>
+                <div class="benefit">
+                    <h4>🛡️ Resilience</h4>
+                    <p>Event-driven architecture with Kafka ensures no data loss. Circuit breakers and retry logic handle failures gracefully.</p>
+                </div>
+                <div class="benefit">
+                    <h4>🔒 Security</h4>
+                    <p>OAuth2/JWT authentication, TLS encryption, rate limiting, virus scanning, and row-level database security.</p>
+                </div>
+                <div class="benefit">
+                    <h4>⚡ Performance</h4>
+                    <p>CDN edge caching, async processing, database indexing, and connection pooling deliver sub-second response times.</p>
+                </div>
+                <div class="benefit">
+                    <h4>🔧 Maintainability</h4>
+                    <p>Clear separation of concerns, well-defined APIs, comprehensive logging, and automated testing enable rapid iteration.</p>
+                </div>
+                <div class="benefit">
+                    <h4>💰 Cost Efficiency</h4>
+                    <p>Pay-per-use cloud services, auto-scaling reduces waste, and efficient resource utilization minimizes operational costs.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Performance Metrics -->
+        <div class="slide">
+            <h2>Performance Metrics</h2>
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value">~310ms</div>
+                    <div class="metric-label">Synchronous Response Time</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">~1.2s</div>
+                    <div class="metric-label">Total Async Processing</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">99.9%</div>
+                    <div class="metric-label">Uptime SLA</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">100/min</div>
+                    <div class="metric-label">Rate Limit per IP</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">3</div>
+                    <div class="metric-label">Kafka Partitions</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">Multi-AZ</div>
+                    <div class="metric-label">Database Redundancy</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Security Features -->
+        <div class="slide">
+            <h2>Security Features</h2>
+            <h3>Authentication & Authorization</h3>
+            <ul>
+                <li><strong>OAuth 2.0 / OIDC:</strong> Industry-standard authentication with AWS Cognito/Auth0</li>
+                <li><strong>JWT RS256:</strong> Asymmetric token signing with JWKS endpoint verification</li>
+                <li><strong>Role-Based Access:</strong> Policyholder, Adjuster, and Admin roles with granular permissions</li>
+                <li><strong>MFA Enforced:</strong> Multi-factor authentication for sensitive operations</li>
+            </ul>
+            
+            <h3>Data Protection</h3>
+            <ul>
+                <li><strong>TLS 1.3:</strong> End-to-end encryption for all API communications</li>
+                <li><strong>SSE-S3:</strong> Server-side encryption at rest for document storage</li>
+                <li><strong>Row-Level Security:</strong> PostgreSQL RLS restricts data access by user role</li>
+                <li><strong>Virus Scanning:</strong> ClamAV integration for uploaded documents</li>
+            </ul>
+            
+            <h3>API Security</h3>
+            <ul>
+                <li><strong>Rate Limiting:</strong> 100 requests per minute per IP address</li>
+                <li><strong>Input Validation:</strong> Zod schema validation on client and server</li>
+                <li><strong>SQL Injection Prevention:</strong> Parameterized queries throughout</li>
+                <li><strong>CORS Configuration:</strong> Strict origin policies for API access</li>
+            </ul>
+        </div>
+
+        <!-- Slide 10: Deployment & Operations -->
+        <div class="slide">
+            <h2>Deployment & Operations</h2>
+            <h3>Containerization</h3>
+            <p>All services are containerized with Docker for consistent deployment across environments.</p>
+            
+            <h3>Orchestration</h3>
+            <ul>
+                <li><strong>Docker Compose:</strong> Local development and testing</li>
+                <li><strong>Kubernetes:</strong> Production deployment with auto-scaling and self-healing</li>
+                <li><strong>Helm Charts:</strong> Templated deployments for multiple environments</li>
+            </ul>
+            
+            <h3>CI/CD Pipeline</h3>
+            <ul>
+                <li><strong>GitHub Actions:</strong> Automated testing and building</li>
+                <li><strong>Container Registry:</strong> ECR/Docker Hub for image storage</li>
+                <li><strong>Blue-Green Deployment:</strong> Zero-downtime releases</li>
+                <li><strong>Automated Rollback:</strong> Health check failures trigger automatic rollback</li>
+            </ul>
+            
+            <h3>Monitoring & Observability</h3>
+            <ul>
+                <li><strong>CloudWatch/Prometheus:</strong> Metrics collection and alerting</li>
+                <li><strong>ELK Stack:</strong> Centralized logging and analysis</li>
+                <li><strong>X-Ray/Jaeger:</strong> Distributed tracing across microservices</li>
+                <li><strong>Health Checks:</strong> Automated service health monitoring</li>
+            </ul>
+        </div>
+
+        <!-- Slide 11: Future Enhancements -->
+        <div class="slide">
+            <h2>Future Enhancements</h2>
+            <h3>Phase 2 Features</h3>
+            <ul>
+                <li><strong>ML-Powered Fraud Detection:</strong> Real-time anomaly detection on claim submissions</li>
+                <li><strong>OCR Document Processing:</strong> Automatic extraction of data from uploaded documents</li>
+                <li><strong>Mobile Applications:</strong> Native iOS and Android apps for on-the-go claims</li>
+                <li><strong>Real-Time Chat:</strong> WebSocket-based support chat with adjusters</li>
+                <li><strong>Advanced Analytics:</strong> Business intelligence dashboards for claim trends</li>
+            </ul>
+            
+            <h3>Infrastructure Improvements</h3>
+            <ul>
+                <li><strong>Multi-Region Deployment:</strong> Geographic redundancy for disaster recovery</li>
+                <li><strong>GraphQL API:</strong> Flexible data querying for frontend applications</li>
+                <li><strong>Service Mesh:</strong> Istio for advanced traffic management and security</li>
+                <li><strong>Serverless Functions:</strong> AWS Lambda for event-driven processing</li>
+            </ul>
+        </div>
+
+        <!-- Slide 12: Conclusion -->
+        <div class="slide">
+            <h2>Conclusion</h2>
+            <p style="font-size: 1.3rem; line-height: 2;">
+                The InsureCo Claims Submission Platform represents a <span class="highlight">modern, scalable, and secure</span> 
+                solution for insurance claim processing. Built on proven technologies and best practices, it delivers:
+            </p>
+            <ul style="font-size: 1.2rem;">
+                <li><strong>Fast Performance:</strong> Sub-second response times for optimal user experience</li>
+                <li><strong>High Availability:</strong> 99.9% uptime with multi-AZ redundancy</li>
+                <li><strong>Enterprise Security:</strong> OAuth2, TLS, and comprehensive data protection</li>
+                <li><strong>Operational Excellence:</strong> Automated deployment, monitoring, and scaling</li>
+                <li><strong>Future-Ready:</strong> Extensible architecture for new features and integrations</li>
+            </ul>
+            <p style="font-size: 1.3rem; margin-top: 40px; text-align: center; color: #667eea; font-weight: bold;">
+                Ready for Production Deployment
+            </p>
+        </div>
+
+        <!-- Slide 13: Demo Instructions -->
+        <div class="slide">
+            <h2>Local Demo Instructions</h2>
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Docker & Docker Compose installed</li>
+                <li>Minimum 8GB RAM available</li>
+                <li>Ports 3000, 5432, 6379, 8000-8002 available</li>
+            </ul>
+            
+            <h3>Quick Start</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div class="flow-content">
+                        <h5>Start Services</h5>
+                        <p><code>docker-compose up -d</code></p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div class="flow-content">
+                        <h5>Access Frontend</h5>
+                        <p>Open browser to <code>http://localhost:3000</code></p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div class="flow-content">
+                        <h5>Submit Test Claim</h5>
+                        <p>Use policy POL-8821, amount $4,200 (auto-approved) or $6,000 (manual review)</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div class="flow-content">
+                        <h5>View Logs</h5>
+                        <p><code>docker-compose logs -f</code> to see real-time processing</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Service URLs</h3>
+            <ul>
+                <li><strong>Frontend:</strong> http://localhost:3000</li>
+                <li><strong>API Gateway:</strong> http://localhost:8000</li>
+                <li><strong>Claims Service:</strong> http://localhost:3001</li>
+                <li><strong>Document Service:</strong> http://localhost:8001</li>
+                <li><strong>Notification Service:</strong> http://localhost:8002</li>
+                <li><strong>MailHog (Email UI):</strong> http://localhost:8025</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 InsureCo. All rights reserved.</p>
+        <p>Confidential - Executive Presentation</p>
+    </div>
+</body>
+</html>
