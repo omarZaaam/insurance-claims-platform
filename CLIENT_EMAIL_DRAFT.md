@@ -2,14 +2,14 @@
 
 ---
 
-**To:** Anne Wirth  
+**To:** [Client Name] 
 **From:** Omar Azzam  
 **Date:** June 12, 2026  
 **Subject:** Bob AI Demo: Rapid POC Development from Architecture to Deployment
 
 ---
 
-Dear Anne,
+Dear Client,
 
 I wanted to follow up on our demonstration session where we showcased Bob AI's capabilities for rapid proof-of-concept development. As you mentioned, your team frequently encounters situations where they have an innovative idea for a POC and need to build it quickly, create a presentation, and gather feedback from leadership—all within tight timelines.
 
